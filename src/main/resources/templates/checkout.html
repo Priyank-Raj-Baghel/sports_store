@@ -1,0 +1,13 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Checkout')}"></head>
+<body><div th:replace="~{layout :: nav}"></div>
+<main class="container py-4"><h3>Checkout</h3><div class="row g-4">
+ <div class="col-md-6"><ul class="list-group"><li class="list-group-item d-flex justify-content-between" th:each="l:${lines}"><span th:text="${l.qty+' × '+l.v.product.name+' ('+l.v.size+')'}"></span><span>₹<span th:text="${#numbers.formatDecimal(l.total,1,0)}"></span></span></li>
+  <li class="list-group-item d-flex justify-content-between"><span>Delivery</span><span>₹<span th:text="${#numbers.formatDecimal(delivery,1,0)}"></span></span></li>
+  <li class="list-group-item d-flex justify-content-between fw-bold"><span>Total</span><span>₹<span th:text="${#numbers.formatDecimal(sub+delivery,1,0)}"></span></span></li></ul></div>
+ <div class="col-md-6"><form method="post" action="/checkout">
+  <label class="form-label">Delivery address</label><textarea name="address" class="form-control mb-3" rows="3" required></textarea>
+  <div class="form-check"><input class="form-check-input" type="radio" name="method" value="ONLINE" id="o" checked><label class="form-check-label" for="o">Pay online (UPI / card — test gateway)</label></div>
+  <div class="form-check mb-3"><input class="form-check-input" type="radio" name="method" value="COD" id="c"><label class="form-check-label" for="c">Cash on delivery</label></div>
+  <button class="btn btn-success">Place order</button></form></div>
+</div></main></body></html>

@@ -1,0 +1,19 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Shop')}"></head>
+<body><div th:replace="~{layout :: nav}"></div>
+<main class="container py-4">
+ <div class="p-4 mb-4 bg-dark text-white rounded"><h1 class="fw-bold">Gear up. Move better.</h1><p class="mb-0">Running, gym, football, cricket &amp; yoga apparel — direct from the brand.</p></div>
+ <form class="row g-2 mb-4" method="get" action="/products">
+  <div class="col-12 col-md-2"><input class="form-control" name="q" placeholder="Search" th:value="${q}"></div>
+  <div class="col-6 col-md-2"><select class="form-select" name="category"><option value="">All categories</option><option th:each="c:${categories}" th:value="${c}" th:text="${c}" th:selected="${c==category}"></option></select></div>
+  <div class="col-6 col-md-2"><select class="form-select" name="sport"><option value="">All sports</option><option th:each="c:${sports}" th:value="${c}" th:text="${c}" th:selected="${c==sport}"></option></select></div>
+  <div class="col-4 col-md-1"><select class="form-select" name="size"><option value="">Size</option><option th:each="c:${sizes}" th:value="${c}" th:text="${c}" th:selected="${c==size}"></option></select></div>
+  <div class="col-4 col-md-2"><input type="number" class="form-control" name="max" placeholder="Max ₹" th:value="${max}"></div>
+  <div class="col-4 col-md-2"><select class="form-select" name="sort"><option value="new" th:selected="${sort=='new'}">Newest</option><option value="low" th:selected="${sort=='low'}">Price: low-high</option><option value="high" th:selected="${sort=='high'}">Price: high-low</option></select></div>
+  <div class="col-12 col-md-1"><button class="btn btn-primary w-100">Go</button></div>
+ </form>
+ <div class="row g-3">
+  <th:block th:each="p:${products}"><div th:replace="~{layout :: card(${p})}"></div></th:block>
+ </div>
+ <p th:if="${#lists.isEmpty(products)}" class="text-muted">No products match your filters.</p>
+</main></body></html>

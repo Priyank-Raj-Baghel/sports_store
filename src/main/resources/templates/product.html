@@ -1,0 +1,20 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head(${p.name})}"></head>
+<body><div th:replace="~{layout :: nav}"></div>
+<main class="container py-4"><div class="row g-4">
+ <div class="col-md-5"><div class="pic rounded" style="height:320px;font-size:9rem" th:text="${p.emoji}"></div></div>
+ <div class="col-md-7"><small class="text-muted" th:text="${p.category+' · '+p.sportType}"></small>
+  <h2 th:text="${p.name}"></h2><p th:text="${p.description}"></p>
+  <h4>₹<span th:text="${#numbers.formatDecimal(p.finalPrice(),1,0)}"></span>
+   <s class="text-muted fs-6" th:if="${p.discount>0}" th:text="${'₹'+#numbers.formatDecimal(p.price,1,0)}"></s>
+   <span class="badge bg-danger fs-6" th:if="${p.discount>0}" th:text="${p.discount+'% off'}"></span></h4>
+  <form method="post" action="/cart/add" class="row g-2">
+   <div class="col-8"><select name="variantId" class="form-select"><option th:each="v:${p.variants}" th:value="${v.id}" th:disabled="${v.stock==0}" th:text="${v.colour+' / '+v.size+' — '+(v.stock>0 ? v.stock+' in stock' : 'Out of stock')}"></option></select></div>
+   <div class="col-4"><input type="number" name="qty" value="1" min="1" class="form-control"></div>
+   <div class="col-12"><button class="btn btn-primary">Add to cart</button></div>
+  </form></div></div>
+ <h5 class="mt-5">You may also like</h5>
+ <div class="row g-3"><th:block th:each="x:${similar}"><div th:replace="~{layout :: card(${x})}"></div></th:block></div>
+ <th:block th:if="${!#lists.isEmpty(together)}"><h5 class="mt-5">Frequently bought together</h5>
+ <div class="row g-3"><th:block th:each="x:${together}"><div th:replace="~{layout :: card(${x})}"></div></th:block></div></th:block>
+</main></body></html>

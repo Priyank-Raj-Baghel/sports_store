@@ -1,0 +1,12 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Account')}"></head>
+<body><div th:replace="~{layout :: nav}"></div>
+<main class="container py-5"><div class="card mx-auto" style="max-width:420px"><div class="card-body">
+ <h4 th:text="${mode=='login' ? 'Login' : 'Create account'}"></h4>
+ <form method="post" th:action="${mode=='login' ? '/login' : '/register'}">
+  <input th:if="${mode=='register'}" name="name" class="form-control mb-2" placeholder="Full name" required>
+  <input type="email" name="email" class="form-control mb-2" placeholder="Email" required>
+  <input type="password" name="password" class="form-control mb-3" placeholder="Password (min 6 chars)" required>
+  <button class="btn btn-primary w-100" th:text="${mode=='login' ? 'Login' : 'Register'}"></button></form>
+ <p class="small text-muted mt-3" th:if="${mode=='login'}">Demo customer: demo@store.com / demo123<br>Admin: admin@store.com / admin123</p>
+</div></div></main></body></html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Admin')}"></head>
+<body><div th:replace="~{layout :: nav}"></div>
+<main class="container py-4"><h3>Admin dashboard</h3>
+ <div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="card card-body"><small>Revenue (confirmed orders)</small><h4>₹<span th:text="${#numbers.formatDecimal(revenue,1,0)}"></span></h4></div></div>
+  <div class="col-md-4"><div class="card card-body"><small>Total orders</small><h4 th:text="${#lists.size(orders)}"></h4></div></div>
+  <div class="col-md-4"><div class="card card-body"><small>Low-stock variants (≤ 3)</small><h4 th:text="${#lists.size(low)}"></h4></div></div></div>
+ <h5>Add product</h5>
+ <form method="post" action="/admin/product" class="row g-2 mb-4">
+  <div class="col-md-3"><input name="name" class="form-control" placeholder="Name" required></div>
+  <div class="col-md-2"><select name="category" class="form-select"><option>Men</option><option>Women</option><option>Kids</option></select></div>
+  <div class="col-md-2"><select name="sportType" class="form-select"><option>Running</option><option>Gym</option><option>Football</option><option>Cricket</option><option>Yoga</option></select></div>
+  <div class="col-md-2"><input name="price" type="number" step="1" class="form-control" placeholder="Price ₹" required></div>
+  <div class="col-md-1"><input name="discount" type="number" value="0" class="form-control" title="Discount %"></div>
+  <div class="col-md-2"><input name="emoji" class="form-control" value="👕"></div>
+  <div class="col-md-4"><input name="description" class="form-control" placeholder="Description" required></div>
+  <div class="col-md-3"><input name="sizes" class="form-control" value="S,M,L,XL"></div>
+  <div class="col-md-2"><input name="colours" class="form-control" value="Black,Blue"></div>
+  <div class="col-md-1"><input name="stock" type="number" value="10" class="form-control"></div>
+  <div class="col-md-2"><button class="btn btn-primary w-100">Add</button></div></form>
+ <h5>Orders</h5>
+ <div class="table-responsive mb-4"><table class="table table-sm align-middle"><tr><th>#</th><th>Customer</th><th>Total</th><th>Method</th><th>Status</th><th>Update</th></tr>
+  <tr th:each="o:${orders}"><td th:text="${o.id}"></td><td th:text="${o.user.name}"></td><td th:text="${#numbers.formatDecimal(o.total,1,0)}"></td><td th:text="${o.method}"></td><td th:text="${o.status}"></td>
+   <td><form method="post" action="/admin/order-status" class="d-flex gap-1"><input type="hidden" name="id" th:value="${o.id}">
+    <select name="status" class="form-select form-select-sm"><option th:each="st:${statuses}" th:value="${st}" th:text="${st}"></option></select><button class="btn btn-sm btn-primary">Set</button></form></td></tr></table></div>
+ <h5>Inventory (variant-level stock)</h5>
+ <div class="table-responsive"><table class="table table-sm align-middle"><tr><th>Product</th><th>Colour / Size</th><th>SKU</th><th>Stock</th></tr>
+  <th:block th:each="p:${products}"><tr th:each="v:${p.variants}" th:classappend="${v.stock<=3}?'table-warning'">
+   <td th:text="${p.name}"></td><td th:text="${v.colour+' / '+v.size}"></td><td th:text="${v.sku}"></td>
+   <td><form method="post" action="/admin/stock" class="d-flex gap-1"><input type="hidden" name="variantId" th:value="${v.id}"><input type="number" name="stock" th:value="${v.stock}" class="form-control form-control-sm" style="width:80px"><button class="btn btn-sm btn-outline-secondary">Save</button></form></td></tr></th:block></table></div>
+</main></body></html>

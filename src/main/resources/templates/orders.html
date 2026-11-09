@@ -1,0 +1,13 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('My Orders')}"></head>
+<body><div th:replace="~{layout :: nav}"></div>
+<main class="container py-4"><h3>My orders</h3>
+ <p th:if="${#lists.isEmpty(orders)}" class="text-muted">No orders yet.</p>
+ <div class="card mb-3" th:each="o:${orders}"><div class="card-body">
+  <div class="d-flex justify-content-between flex-wrap"><b th:text="${'#'+o.id+' · '+o.date()}"></b>
+   <span class="badge" th:classappend="${o.status=='PENDING'}?'bg-warning text-dark':(${o.status=='CANCELLED'}?'bg-danger':'bg-success')" th:text="${o.status}"></span></div>
+  <ul class="mb-2 mt-2"><li th:each="i:${o.items}" th:text="${i.qty+' × '+i.variant.product.name+' ('+i.variant.colour+' / '+i.variant.size+') — ₹'+#numbers.formatDecimal(i.unitPrice,1,0)}"></li></ul>
+  <div class="d-flex justify-content-between align-items-center"><span>Total ₹<b th:text="${#numbers.formatDecimal(o.total,1,0)}"></b> · <span th:text="${o.method}"></span></span>
+   <a th:if="${o.status=='PENDING' and o.method=='ONLINE'}" class="btn btn-sm btn-success" th:href="@{/pay/{id}(id=${o.id})}">Pay now</a></div>
+ </div></div>
+</main></body></html>

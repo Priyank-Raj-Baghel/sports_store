@@ -1,0 +1,23 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Payment')}"></head>
+<body><div th:replace="~{layout :: nav}"></div>
+<main class="container py-5"><div class="card mx-auto" style="max-width:480px"><div class="card-body">
+ <h4 th:text="${live} ? '🔒 Pay securely with Razorpay' : '🔒 Test Payment Gateway (mock)'"></h4>
+ <p>Order <b th:text="${o.paymentRef}"></b><br>Amount: <b>₹<span th:text="${#numbers.formatDecimal(o.total,1,0)}"></span></b></p>
+ <form id="vf" method="post" action="/payment/verify">
+  <input type="hidden" name="order_ref" id="f_o" th:value="${o.paymentRef}"><input type="hidden" name="payment_id" id="f_p" th:value="${pid}"><input type="hidden" name="signature" id="f_s" th:value="${sig}">
+  <button type="submit" th:unless="${live}" class="btn btn-success w-100 mb-2">Pay now (test mode)</button>
+ </form>
+ <th:block th:if="${live}">
+  <button id="rzp" class="btn btn-success w-100 mb-2">Pay with UPI / Card / Net banking</button>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script th:inline="javascript">
+   var opts={key:[[${keyId}]],amount:[[${paise}]],currency:"INR",name:"SportsStore",order_id:[[${o.paymentRef}]],
+     prefill:{name:[[${me.name}]],email:[[${me.email}]]},
+     handler:function(r){document.getElementById('f_o').value=r.razorpay_order_id;document.getElementById('f_p').value=r.razorpay_payment_id;
+       document.getElementById('f_s').value=r.razorpay_signature;document.getElementById('vf').submit();}};
+   document.getElementById('rzp').onclick=function(e){e.preventDefault();new Razorpay(opts).open();};
+  </script></th:block>
+ <a class="btn btn-outline-danger w-100 mb-3" href="/orders">Cancel / pay later</a>
+ <small class="text-muted">The server verifies the HMAC-SHA256 signature before marking the order PAID and reducing stock.</small>
+</div></div></main></body></html>

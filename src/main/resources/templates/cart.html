@@ -1,0 +1,20 @@
+<!DOCTYPE html><html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{layout :: head('Cart')}"></head>
+<body><div th:replace="~{layout :: nav}"></div>
+<main class="container py-4"><h3>Your cart</h3>
+ <p th:if="${#lists.isEmpty(lines)}" class="text-muted">Cart is empty. <a href="/">Continue shopping</a></p>
+ <th:block th:if="${!#lists.isEmpty(lines)}">
+ <div class="table-responsive"><table class="table align-middle">
+  <tr th:each="l:${lines}">
+   <td th:text="${l.v.product.emoji+' '+l.v.product.name}"></td><td th:text="${l.v.colour+' / '+l.v.size}"></td>
+   <td>₹<span th:text="${#numbers.formatDecimal(l.v.product.finalPrice(),1,0)}"></span></td>
+   <td><form method="post" action="/cart/update" class="d-flex gap-1"><input type="hidden" name="variantId" th:value="${l.v.id}">
+     <input type="number" name="qty" th:value="${l.qty}" min="0" class="form-control form-control-sm" style="width:70px"><button class="btn btn-sm btn-outline-secondary">Update</button></form></td>
+   <td>₹<span th:text="${#numbers.formatDecimal(l.total,1,0)}"></span></td>
+   <td><form method="post" action="/cart/remove"><input type="hidden" name="variantId" th:value="${l.v.id}"><button class="btn btn-sm btn-outline-danger">✕</button></form></td>
+  </tr></table></div>
+ <div class="text-end"><p class="mb-1">Subtotal: ₹<span th:text="${#numbers.formatDecimal(sub,1,0)}"></span></p>
+  <p class="mb-1">Delivery: ₹<span th:text="${#numbers.formatDecimal(delivery,1,0)}"></span> <small class="text-muted">(free above ₹1999)</small></p>
+  <h5>Total: ₹<span th:text="${#numbers.formatDecimal(sub+delivery,1,0)}"></span></h5>
+  <a class="btn btn-primary" href="/checkout">Proceed to checkout</a></div></th:block>
+</main></body></html>
